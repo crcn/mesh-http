@@ -67,7 +67,8 @@ describe(__filename + "#", function() {
 
   it("method can be function", function() {
     var stream = crudlet.stream(http({ request: request }));
-    stream.write(crudlet.operation("insert", { data: { name: "blarg" }, path:"/a", method: function() {
+    stream.write(crudlet.operation("insert", { data: { name: "blarg" }, path:"/a", method: function(operation) {
+      expect(operation.path).to.be("/a");
       return "patch";
     }}));
     expect(requests[0].method).to.be("patch");
@@ -85,6 +86,21 @@ describe(__filename + "#", function() {
         return { data: data }
       }
     }));
+  });
+
+  it("can provide custom http headers", function() {
+    var stream = crudlet.stream(http({ request: request }));
+    stream.write(crudlet.operation("insert", { data: { name: "blarg" }, path:"/a", headers: { ua: "b" } }));
+    expect(requests[0].headers.ua).to.be("b");
+  });
+
+  it("headers can be a function", function() {
+    var stream = crudlet.stream(http({ request: request }));
+    stream.write(crudlet.operation("insert", { data: { name: "blarg" }, path:"/a", headers: function(operation) {
+      expect(operation.path).to.be("/a");
+      return { ua: "b" };
+    } }));
+    expect(requests[0].headers.ua).to.be("b");
   });
 
 });
