@@ -49,6 +49,13 @@ describe(__filename + "#", function() {
     expect(requests[0].uri).to.be("/blarg");
   });
 
+
+  it("can have http specific params", function() {
+    var stream = crudlet.stream(http({ request: request }));
+    stream.write(crudlet.operation("insert", { http: { data: { name: "blarg" }, path: "/:data.name" }}));
+    expect(requests[0].uri).to.be("/blarg");
+  });
+
   it("path can be a function", function() {
     var stream = crudlet.stream(http({ request: request }));
     stream.write(crudlet.operation("insert", { data: { name: "blarg" }, path: function(op) {
