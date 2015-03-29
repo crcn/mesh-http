@@ -58,6 +58,14 @@ describe(__filename + "#", function() {
     expect(requests[0].uri).to.be("/blarg");
   });
 
+  it("method can be function", function() {
+    var stream = crudlet.stream(http({ request: request }));
+    stream.write(crudlet.operation("insert", { data: { name: "blarg" }, path:"/a", method: function() {
+      return "patch";
+    }}));
+    expect(requests[0].method).to.be("patch");
+  });
+
   it("can use a transform function for the response", function(next) {
     var stream = crudlet.stream(http({ request: request }));
     stream.on("data", function(data) {
