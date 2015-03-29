@@ -103,4 +103,19 @@ describe(__filename + "#", function() {
     expect(requests[0].headers.ua).to.be("b");
   });
 
+  it("can add a query", function() {
+    var stream = crudlet.stream(http({ request: request }));
+    stream.write(crudlet.operation("insert", { data: { name: "blarg" }, path:"/a", query: {ua:"b"}}));
+    expect(requests[0].uri).to.be("/a?ua=b");
+  });
+
+  it("query can be a function", function() {
+    var stream = crudlet.stream(http({ request: request }));
+    stream.write(crudlet.operation("insert", { data: { name: "blarg" }, path:"/a", query: function(operation) {
+      expect(operation.path).to.be("/a");
+      return { ua: "b" };
+    } }));
+    expect(requests[0].uri).to.be("/a?ua=b");
+  });
+
 });
