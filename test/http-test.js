@@ -1,31 +1,66 @@
-var http      = require("..");
-var crudlet   = require("crudlet");
-var sinon     = require("sinon");
-var express   = require("express");
-var supertest = require("supertest");
+var http    = require("..");
+var crudlet = require("crudlet");
+var expect  = require("expect.js");
 
 describe(__filename + "#", function() {
 
-  var server, agent;
+  var requests, db;
 
-  before(function() {
-    var server = express();
-    server.post("/path", function(req, res) {
-      res.send({ name: "blarg" });
-    });
-    var agent  = supertest(server);
+  function request(options, next) {
+    requests.push(options);
+    next(null, options.body);
+  }
+
+  beforeEach(function() {
+    requests = [];
   });
 
-  after(function() {
-    // server.close();
-  })
+  it("can customize the methods", function() {
+    var stream = crudlet.stream(http({ 
+      request: request,
+      methods: {
+        "insert" : "a",
+        "update" : "b",
+        "load"   : "c",
+        "remove" : "d"
+      }
+    }));
+    stream.write(crudlet.operation("insert", { path: "/ab" }));
+    stream.write(crudlet.operation("update", { path: "/ab" }));
+    stream.write(crudlet.operation("load", { path: "/ab" }));
+    stream.write(crudlet.operation("remove", { path: "/ab" }));
 
-
-  it("can run a get request", function(next) {
-
-
-    crudlet.stream(http({ agent: agent })).on("data", function() {
-      next()
-    }).write(crudlet.operation("insert", { path: "/ab" }));
+    expect(requests[0].method).to.be("a");
+    expect(requests[1].method).to.be("b");
+    expect(requests[2].method).to.be("c");
+    expect(requests[3].method).to.be("d");
   });
+
+
+  it("can run a get request", function() {
+    crudlet.stream(http({ request: request })).write(crudlet.operation("insert", { path: "/ab" }));
+    expect(requests[0].method).to.be("post");
+    expect(requests[0].uri).to.be("/ab");
+  });
+
+  it("can pass params in the path", function() {
+    var stream = crudlet.stream(http({ request: request }));
+    stream.write(crudlet.operation("insert", { data: { name: "blarg" }, path: "/:data.name" }));
+    expect(requests[0].uri).to.be("/blarg");
+  });
+
+  it("can use a transform function for the response", function(next) {
+    var stream = crudlet.stream(http({ request: request }));
+    stream.on("data", function(data) {
+      expect(data.data.name).to.be("blarg");
+      next();
+    }).write(crudlet.operation("insert", { 
+      data: { name: "blarg" }, 
+      path: "/a",
+      transform: function(data) {
+        return { data: data }
+      }
+    }));
+  });
+
 });
