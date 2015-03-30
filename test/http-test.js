@@ -118,4 +118,27 @@ describe(__filename + "#", function() {
     expect(requests[0].uri).to.be("/a?ua=b");
   });
 
+  it("automatically maps the path based on the collection", function() {
+
+    var stream = crudlet.stream(http({ 
+      request: request
+    }));
+
+    stream.write(crudlet.operation("insert", { collection: "people", data: { uid: "1" }}));
+    stream.write(crudlet.operation("update", { collection: "people", data: { uid: "1" }}));
+    stream.write(crudlet.operation("load", { collection: "people", data: { uid: "1" }}));
+    stream.write(crudlet.operation("load", { collection: "people",  multi: true, data: { uid: "1" }}));
+    stream.write(crudlet.operation("remove", { collection: "people", data: { uid: "1" }}));
+
+    expect(requests[0].uri).to.be("/people");
+    expect(requests[1].uri).to.be("/people/1");
+    expect(requests[2].uri).to.be("/people/1");
+    expect(requests[3].uri).to.be("/people");
+    expect(requests[4].uri).to.be("/people/1");
+  });
+
+  it("can change the idProperty", function() {
+
+  });
+
 });

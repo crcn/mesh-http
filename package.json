@@ -1,6 +1,6 @@
 {
   "name": "crudlet-http",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "local storage adapter (offline-mode) for crudlet",
   "main": "./lib/index.js",
   "scripts": {
