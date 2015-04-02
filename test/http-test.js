@@ -4,7 +4,8 @@ var expect  = require("expect.js");
 
 describe(__filename + "#", function() {
 
-  var requests, db;
+  var requests;
+  var db;
 
   function request(options, next) {
     requests.push(options);
@@ -16,7 +17,7 @@ describe(__filename + "#", function() {
   });
 
   it("can customize the methods", function(next) {
-    var stream = crudlet.open(http({ 
+    var stream = crudlet.open(http({
       request: request,
       methods: {
         "insert" : "a",
@@ -40,7 +41,6 @@ describe(__filename + "#", function() {
 
   });
 
-
   it("can run a get request", function(next) {
     crudlet.open(http({ request: request })).on("end", function() {
       expect(requests[0].method).to.be("post");
@@ -55,7 +55,6 @@ describe(__filename + "#", function() {
       next();
     }).end(crudlet.operation("insert", { data: { name: "blarg" }, path: "/:data.name" }));
   });
-
 
   it("can have http specific params", function(next) {
     var stream = crudlet.stream(http({ request: request })).
@@ -93,11 +92,11 @@ describe(__filename + "#", function() {
     stream.on("data", function(data) {
       expect(data.data.name).to.be("blarg");
       next();
-    }).end(crudlet.operation("insert", { 
-      data: { name: "blarg" }, 
+    }).end(crudlet.operation("insert", {
+      data: { name: "blarg" },
       path: "/a",
       transform: function(data) {
-        return { data: data }
+        return { data: data };
       }
     }));
   });
@@ -147,7 +146,7 @@ describe(__filename + "#", function() {
 
   it("automatically maps the path based on the collection", function(next) {
 
-    var stream = crudlet.stream(http({ 
+    var stream = crudlet.stream(http({
       request: request
     }));
 
@@ -169,8 +168,19 @@ describe(__filename + "#", function() {
 
   });
 
-  it("can change the idProperty", function() {
+  xit("can change the idProperty", function() {
+  });
 
+  it("can add a prefix", function(next) {
+    var stream = crudlet.stream(http({
+      prefix: "/api",
+      request: request
+    }));
+    stream.on("end", function() {
+      expect(requests[0].uri).to.be("/api/people");
+      next();
+    });
+    stream.end(crudlet.operation("insert", { collection: "people", data: { uid: "1" }}));
   });
 
 });
