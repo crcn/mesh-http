@@ -1,6 +1,6 @@
 {
   "name": "crudlet-http",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "local storage adapter (offline-mode) for crudlet",
   "main": "./lib/index.js",
   "scripts": {
@@ -18,7 +18,7 @@
   "homepage": "https://github.com/crcn/crudlet.js",
   "devDependencies": {
     "browserify": "^9.0.3",
-    "crudlet": "0.0.6",
+    "crudlet": "0.0.x",
     "expect.js": "^0.3.1",
     "gulp": "^3.8.11",
     "gulp-concat": "^2.5.2",
@@ -37,8 +37,8 @@
     "yargs": "^3.6.0"
   },
   "dependencies": {
+    "obj-stream": "0.0.12",
     "request": "^2.54.0",
-    "through2": "^0.6.3",
     "xhr": "^2.0.1",
     "xtend": "^4.0.0"
   }
