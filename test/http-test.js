@@ -183,4 +183,15 @@ describe(__filename + "#", function() {
     stream.end(crudlet.operation("insert", { collection: "people", data: { uid: "1" }}));
   });
 
+  it("can add a prefix in the operation", function(next) {
+    var stream = crudlet.stream(http({
+      request: request
+    }));
+    stream.on("end", function() {
+      expect(requests[0].uri).to.be("/api/people");
+      next();
+    });
+    stream.end(crudlet.operation("insert", { prefix: "/api", collection: "people", data: { uid: "1" }}));
+  });
+
 });
