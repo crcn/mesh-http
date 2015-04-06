@@ -29,7 +29,7 @@ db(crud.op("insert", {
 }))
 ```
 
-#### http + [caplet](https://github.com/mojo-js/caplet.js) example:
+#### http + [caplet](https://github.com/mojo-js/caplet.js) example
 
 ```javascript
 var caplet = require("caplet");
