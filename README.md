@@ -108,7 +108,7 @@ var Todo = caplet.createModelClass({
     "tags" : function() {
       var tags = Tags({ owner: this });
       tags.load();
-      this.set(tags);
+      this.set("tags", tags);
     },
 
     // missing prop - load self
