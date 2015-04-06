@@ -81,12 +81,12 @@ var Tags = caplet.createModelClass({
   load: function() {
 
     // GET /todos/:todo/tags
-    dbs.
-    tags(crud.op("load", {
-      owner: this.owner
-    })).
-    pipe(_.pipeline(_.collect)).
-    on("data", this.set.bind(this, "data"));
+    dbs
+      .tags(crud.op("load", {
+        owner: this.owner
+      }))
+      .pipe(_.pipeline(_.collect))
+      .on("data", this.set.bind(this, "data"));
   }
 });
 
@@ -130,22 +130,24 @@ var Todo = caplet.createModelClass({
   load: function() {
 
     // GET /todos/:todo
-    dbs.
-    todos(crud.op("load", {
-      data: this
-    })).
-    on("data", this.set.bind(this, "data"));
+    dbs
+      .todos(crud.op("load", {
+        data: this
+      }))
+      .on("data", this.set.bind(this, "data"));
   },
 
   /**
    */
 
   save: function() {
-    dbs.
-    todos(crud.op("upsert", {
-      data: this
-    })).
-    on("data", this.set.bind(this, "data"));
+
+    // POST or PUT
+    dbs
+      .todos(crud.op("upsert", {
+        data: this
+      }))
+      .on("data", this.set.bind(this, "data"));
   }
 });
 
@@ -157,10 +159,10 @@ var Todos = caplet.createCollectionClass({
   load: function() {
 
     // GET /todos
-    dbs.
-    todos(crud.op("load", { multi: true })).
-    pipe(_.pipeline(_.collect)).
-    on("data", this.set.bind(this, "data"));
+    dbs
+      .todos(crud.op("load", { multi: true })).
+      .pipe(_.pipeline(_.collect))
+      .on("data", this.set.bind(this, "data"));
   }
 });
 ```
