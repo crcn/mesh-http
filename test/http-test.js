@@ -19,11 +19,13 @@ describe(__filename + "#", function() {
   it("can customize the methods", function(next) {
     var stream = crudlet.open(http({
       request: request,
-      methods: {
-        "insert" : "a",
-        "update" : "b",
-        "load"   : "c",
-        "remove" : "d"
+      method: function(operation) {
+        return {
+          "insert" : "a",
+          "update" : "b",
+          "load"   : "c",
+          "remove" : "d"
+        }[operation.name];
       }
     }));
     stream.on("end", function() {
@@ -194,4 +196,33 @@ describe(__filename + "#", function() {
     stream.end(crudlet.operation("insert", { prefix: "/api", collection: "people", data: { uid: "1" }}));
   });
 
+  it("can upsert and insert a value", function(next) {
+    var db = http({
+      request: request
+    });
+
+    db(crudlet.operation("upsert", {
+      collection: "people",
+      data: { name: "a" }
+    })).on("end", function() {
+      expect(requests[0].uri).to.be("/people");
+      expect(requests[0].method).to.be("post");
+      next();
+    });
+  });
+
+  it("can upsert and update a value", function(next) {
+    var db = http({
+      request: request
+    });
+
+    db(crudlet.operation("upsert", {
+      collection: "people",
+      data: { uid: "a" }
+    })).on("end", function() {
+      expect(requests[0].uri).to.be("/people/a");
+      expect(requests[0].method).to.be("put");
+      next();
+    });
+  });
 });
