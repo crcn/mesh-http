@@ -76,7 +76,7 @@ gulp.task("bundle", function() {
 
 gulp.task("minify", ["bundle"], function() {
   return gulp.
-  src("./dist/crudlet.js").
+  src("./dist/mesh.js").
   pipe(uglify()).
   pipe(rename(function(path) {
       path.basename += ".min";

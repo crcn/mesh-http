@@ -1,5 +1,5 @@
 var http    = require("..");
-var crudlet = require("crudlet");
+var mesh = require("mesh");
 var expect  = require("expect.js");
 
 describe(__filename + "#", function() {
@@ -17,7 +17,7 @@ describe(__filename + "#", function() {
   });
 
   it("can customize the methods", function(next) {
-    var stream = crudlet.open(http({
+    var stream = mesh.open(http({
       request: request,
       method: function(operation) {
         return {
@@ -36,65 +36,65 @@ describe(__filename + "#", function() {
       next();
     });
 
-    stream.write(crudlet.operation("insert", { path: "/ab" }));
-    stream.write(crudlet.operation("update", { path: "/ab" }));
-    stream.write(crudlet.operation("load", { path: "/ab" }));
-    stream.end(crudlet.operation("remove", { path: "/ab" }));
+    stream.write(mesh.operation("insert", { path: "/ab" }));
+    stream.write(mesh.operation("update", { path: "/ab" }));
+    stream.write(mesh.operation("load", { path: "/ab" }));
+    stream.end(mesh.operation("remove", { path: "/ab" }));
 
   });
 
   it("can run a get request", function(next) {
-    crudlet.open(http({ request: request })).on("end", function() {
+    mesh.open(http({ request: request })).on("end", function() {
       expect(requests[0].method).to.be("post");
       expect(requests[0].uri).to.be("/ab");
       next();
-    }).end(crudlet.operation("insert", { path: "/ab" }));
+    }).end(mesh.operation("insert", { path: "/ab" }));
   });
 
   it("can pass params in the path", function(next) {
-    var stream = crudlet.stream(http({ request: request })).on("end", function() {
+    var stream = mesh.stream(http({ request: request })).on("end", function() {
       expect(requests[0].uri).to.be("/blarg");
       next();
-    }).end(crudlet.operation("insert", { data: { name: "blarg" }, path: "/:data.name" }));
+    }).end(mesh.operation("insert", { data: { name: "blarg" }, path: "/:data.name" }));
   });
 
   it("can have http specific params", function(next) {
-    var stream = crudlet.stream(http({ request: request })).
+    var stream = mesh.stream(http({ request: request })).
     on("end", function() {
       expect(requests[0].uri).to.be("/blarg");
       next();
-    }).end(crudlet.operation("insert", { http: { data: { name: "blarg" }, path: "/:data.name" }}));
+    }).end(mesh.operation("insert", { http: { data: { name: "blarg" }, path: "/:data.name" }}));
   });
 
   it("path can be a function", function(next) {
-    var stream = crudlet.stream(http({ request: request })).
+    var stream = mesh.stream(http({ request: request })).
     on("end", function() {
       expect(requests[0].uri).to.be("/blarg");
       next();
-    }).end(crudlet.operation("insert", { data: { name: "blarg" }, path: function(op) {
+    }).end(mesh.operation("insert", { data: { name: "blarg" }, path: function(op) {
       expect(op.name).to.be("insert");
       return "/:data.name";
     }}));
   });
 
   it("method can be function", function(next) {
-    var stream = crudlet.stream(http({ request: request }));
+    var stream = mesh.stream(http({ request: request }));
     stream.on("end", function() {
       expect(requests[0].method).to.be("patch");
       next();
     });
-    stream.end(crudlet.operation("insert", { data: { name: "blarg" }, path:"/a", method: function(operation) {
+    stream.end(mesh.operation("insert", { data: { name: "blarg" }, path:"/a", method: function(operation) {
       expect(operation.path).to.be("/a");
       return "patch";
     }}));
   });
 
   it("can use a transform function for the response", function(next) {
-    var stream = crudlet.stream(http({ request: request }));
+    var stream = mesh.stream(http({ request: request }));
     stream.on("data", function(data) {
       expect(data.data.name).to.be("blarg");
       next();
-    }).end(crudlet.operation("insert", {
+    }).end(mesh.operation("insert", {
       data: { name: "blarg" },
       path: "/a",
       transform: function(data) {
@@ -104,43 +104,43 @@ describe(__filename + "#", function() {
   });
 
   it("can provide custom http headers", function(next) {
-    var stream = crudlet.stream(http({ request: request }));
+    var stream = mesh.stream(http({ request: request }));
 
     stream.on("end", function() {
       expect(requests[0].headers.ua).to.be("b");
       next();
     });
-    stream.end(crudlet.operation("insert", { data: { name: "blarg" }, path:"/a", headers: { ua: "b" } }));
+    stream.end(mesh.operation("insert", { data: { name: "blarg" }, path:"/a", headers: { ua: "b" } }));
   });
 
   it("headers can be a function", function(next) {
-    var stream = crudlet.stream(http({ request: request }));
+    var stream = mesh.stream(http({ request: request }));
     stream.on("end", function() {
       expect(requests[0].headers.ua).to.be("b");
       next();
     });
-    stream.end(crudlet.operation("insert", { data: { name: "blarg" }, path:"/a", headers: function(operation) {
+    stream.end(mesh.operation("insert", { data: { name: "blarg" }, path:"/a", headers: function(operation) {
       expect(operation.path).to.be("/a");
       return { ua: "b" };
     } }));
   });
 
   it("can add a query", function(next) {
-    var stream = crudlet.stream(http({ request: request }));
+    var stream = mesh.stream(http({ request: request }));
     stream.on("end", function() {
       expect(requests[0].uri).to.be("/a?ua=b");
       next();
     });
-    stream.end(crudlet.operation("insert", { data: { name: "blarg" }, path:"/a", query: {ua:"b"}}));
+    stream.end(mesh.operation("insert", { data: { name: "blarg" }, path:"/a", query: {ua:"b"}}));
   });
 
   it("query can be a function", function(next) {
-    var stream = crudlet.stream(http({ request: request }));
+    var stream = mesh.stream(http({ request: request }));
     stream.on("end", function() {
       expect(requests[0].uri).to.be("/a?ua=b");
       next();
     });
-    stream.end(crudlet.operation("insert", { data: { name: "blarg" }, path:"/a", query: function(operation) {
+    stream.end(mesh.operation("insert", { data: { name: "blarg" }, path:"/a", query: function(operation) {
       expect(operation.path).to.be("/a");
       return { ua: "b" };
     } }));
@@ -148,7 +148,7 @@ describe(__filename + "#", function() {
 
   it("automatically maps the path based on the collection", function(next) {
 
-    var stream = crudlet.stream(http({
+    var stream = mesh.stream(http({
       request: request
     }));
 
@@ -161,11 +161,11 @@ describe(__filename + "#", function() {
       next();
     });
 
-    stream.write(crudlet.operation("insert", { collection: "people", data: { uid: "1" }}));
-    stream.write(crudlet.operation("update", { collection: "people", data: { uid: "1" }}));
-    stream.write(crudlet.operation("load", { collection: "people", data: { uid: "1" }}));
-    stream.write(crudlet.operation("load", { collection: "people",  multi: true, data: { uid: "1" }}));
-    stream.write(crudlet.operation("remove", { collection: "people", data: { uid: "1" }}));
+    stream.write(mesh.operation("insert", { collection: "people", data: { uid: "1" }}));
+    stream.write(mesh.operation("update", { collection: "people", data: { uid: "1" }}));
+    stream.write(mesh.operation("load", { collection: "people", data: { uid: "1" }}));
+    stream.write(mesh.operation("load", { collection: "people",  multi: true, data: { uid: "1" }}));
+    stream.write(mesh.operation("remove", { collection: "people", data: { uid: "1" }}));
     stream.end();
 
   });
@@ -174,7 +174,7 @@ describe(__filename + "#", function() {
   });
 
   it("can add a prefix", function(next) {
-    var stream = crudlet.stream(http({
+    var stream = mesh.stream(http({
       prefix: "/api",
       request: request
     }));
@@ -182,18 +182,18 @@ describe(__filename + "#", function() {
       expect(requests[0].uri).to.be("/api/people");
       next();
     });
-    stream.end(crudlet.operation("insert", { collection: "people", data: { uid: "1" }}));
+    stream.end(mesh.operation("insert", { collection: "people", data: { uid: "1" }}));
   });
 
   it("can add a prefix in the operation", function(next) {
-    var stream = crudlet.stream(http({
+    var stream = mesh.stream(http({
       request: request
     }));
     stream.on("end", function() {
       expect(requests[0].uri).to.be("/api/people");
       next();
     });
-    stream.end(crudlet.operation("insert", { prefix: "/api", collection: "people", data: { uid: "1" }}));
+    stream.end(mesh.operation("insert", { prefix: "/api", collection: "people", data: { uid: "1" }}));
   });
 
   it("can upsert and insert a value", function(next) {
@@ -201,7 +201,7 @@ describe(__filename + "#", function() {
       request: request
     });
 
-    db(crudlet.operation("upsert", {
+    db(mesh.operation("upsert", {
       collection: "people",
       data: { name: "a" }
     })).on("end", function() {
@@ -216,7 +216,7 @@ describe(__filename + "#", function() {
       request: request
     });
 
-    db(crudlet.operation("upsert", {
+    db(mesh.operation("upsert", {
       collection: "people",
       data: { uid: "a" }
     })).on("end", function() {

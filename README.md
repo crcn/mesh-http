@@ -1,29 +1,29 @@
-HTTP (api) adapter for [crudlet](http://github.com/mojo-js/crudlet.js).
+HTTP (api) adapter for [mesh](http://github.com/mojo-js/mesh.js).
 
 Simple example:
 
 ```javascript
-var crudlet = require("crudlet");
-var http = require("crudlet-http");
-var db = crudlet.child(http(), {
+var mesh = require("mesh");
+var http = require("mesh-http");
+var db = mesh.child(http(), {
   prefix: "/api"
 });
 
 // POST /api/people
-db(crud.op("insert", {
+db(mesh.op("insert", {
   collection: "people",
   data: { name: "abba" }
 }))
 
 // this also works too:
-db(crud.op("insert", {
+db(mesh.op("insert", {
   path: "/people",
 
   // overridable
   method: "POST",
 
   // keep collection to make sure your API is interoperable
-  // with other crudlet adapters
+  // with other mesh adapters
   collection: "people",
   data: { name: "abba" }
 }))
@@ -33,8 +33,8 @@ db(crud.op("insert", {
 
 ```javascript
 var caplet = require("caplet");
-var crud   = require("crudlet")
-var http   = require("crudlet-http");
+var mesh   = require("mesh")
+var http   = require("mesh-http");
 var _      = require("highland");
 
 var db = http({
@@ -63,8 +63,8 @@ var db = http({
 });
 
 var dbs = {
-  tags  : crud.child(db, { collection: "tags"  }),
-  todos : crud.child(db, { collection: "todos" })
+  tags  : mesh.child(db, { collection: "tags"  }),
+  todos : mesh.child(db, { collection: "todos" })
 };
 
 /**
@@ -82,7 +82,7 @@ var Tags = caplet.createModelClass({
 
     // GET /todos/:todo/tags
     dbs
-      .tags(crud.op("load", {
+      .tags(mesh.op("load", {
         owner: this.owner
       }))
       .pipe(_.pipeline(_.collect))
@@ -131,7 +131,7 @@ var Todo = caplet.createModelClass({
 
     // GET /todos/:todo
     dbs
-      .todos(crud.op("load", {
+      .todos(mesh.op("load", {
         data: this
       }))
       .on("data", this.set.bind(this, "data"));
@@ -144,7 +144,7 @@ var Todo = caplet.createModelClass({
 
     // POST or PUT
     dbs
-      .todos(crud.op("upsert", {
+      .todos(mesh.op("upsert", {
         data: this
       }))
       .on("data", this.set.bind(this, "data"));
@@ -160,7 +160,7 @@ var Todos = caplet.createCollectionClass({
 
     // GET /todos
     dbs
-      .todos(crud.op("load", { multi: true })).
+      .todos(mesh.op("load", { multi: true })).
       .pipe(_.pipeline(_.collect))
       .on("data", this.set.bind(this, "data"));
   }
@@ -182,7 +182,7 @@ Performs a new operation on the API
 
 - `options`
   - `path` - (optional) path to the route - automatically resolved by collection if this is omitted
-  - `method` - (optional) resolved by CRUD method
+  - `method` - (optional) resolved by mesh method
   - `headers` - (optional) HTTP headers
 
 
@@ -204,7 +204,7 @@ db("remove", {
 Insert operation.
 
 ```javascript
-var peopleDb = crud.child(db, { collection: "people" });
+var peopleDb = mesh.child(db, { collection: "people" });
 
 // resolves to POST /people with data as body
 peopleDb("insert", { data: [{ name: "john"}, { name: "matt" }]}).on("data", function() {
