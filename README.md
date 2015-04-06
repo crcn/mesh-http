@@ -55,7 +55,7 @@ var db = http({
     return {
       "insert" : cpath,
       "update" : mpath,
-      "upsert" : operation.data && operation.data.uid ? mpath, cpath,
+      "upsert" : operation.data && operation.data.uid ? mpath : cpath,
       "load"   : operation.multi ? cpath : mpath,
       "remove" : mpath
     }[operation.name];
