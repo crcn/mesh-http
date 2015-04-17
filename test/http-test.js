@@ -9,7 +9,7 @@ describe(__filename + "#", function() {
 
   function request(options, next) {
     requests.push(options);
-    next(null, options.body);
+    next(null, options.data);
   }
 
   beforeEach(function() {
@@ -219,6 +219,22 @@ describe(__filename + "#", function() {
     db(mesh.operation("upsert", {
       collection: "people",
       data: { uid: "a" }
+    })).on("end", function() {
+      expect(requests[0].uri).to.be("/people/a");
+      expect(requests[0].method).to.be("put");
+      next();
+    });
+  });
+
+  it("doesn't add query if obj exists", function(next) {
+    var db = http({
+      request: request
+    });
+
+    db(mesh.operation("upsert", {
+      collection: "people",
+      data: { uid: "a" },
+      query: {},
     })).on("end", function() {
       expect(requests[0].uri).to.be("/people/a");
       expect(requests[0].method).to.be("put");
