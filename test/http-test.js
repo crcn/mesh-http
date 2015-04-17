@@ -241,4 +241,20 @@ describe(__filename + "#", function() {
       next();
     });
   });
+
+  it("passes data to body if it's a string", function(next) {
+    var db = http({
+      request: request
+    });
+
+    db(mesh.operation("upsert", {
+      collection: "people",
+      data: "abc",
+      query: {},
+    })).on("end", function() {
+      expect(requests[0].uri).to.be("/people");
+      expect(requests[0].body).to.be("abc");
+      next();
+    });
+  });
 });
