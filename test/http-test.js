@@ -253,7 +253,7 @@ describe(__filename + "#", function() {
       query: {},
     })).on("end", function() {
       expect(requests[0].uri).to.be("/people");
-      expect(requests[0].body).to.be("abc");
+      expect(requests[0].data).to.be("abc");
       next();
     });
   });
