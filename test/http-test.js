@@ -128,7 +128,8 @@ describe(__filename + "#", function() {
   it("can add a query", function(next) {
     var stream = mesh.stream(http({ request: request }));
     stream.on("end", function() {
-      expect(requests[0].uri).to.be("/a?ua=b");
+      expect(requests[0].uri).to.be("/a");
+      expect(requests[0].query.ua).to.be("b");
       next();
     });
     stream.end(mesh.operation("insert", { data: { name: "blarg" }, path:"/a", query: {ua:"b"}}));
@@ -137,7 +138,7 @@ describe(__filename + "#", function() {
   it("query can be a function", function(next) {
     var stream = mesh.stream(http({ request: request }));
     stream.on("end", function() {
-      expect(requests[0].uri).to.be("/a?ua=b");
+      expect(requests[0].query.ua).to.be("b");
       next();
     });
     stream.end(mesh.operation("insert", { data: { name: "blarg" }, path:"/a", query: function(operation) {

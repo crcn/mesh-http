@@ -1,6 +1,6 @@
 {
   "name": "mesh-http",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "local storage adapter (offline-mode) for mesh",
   "main": "./lib/index.js",
   "scripts": {
