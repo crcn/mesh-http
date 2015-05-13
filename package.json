@@ -1,6 +1,6 @@
 {
   "name": "mesh-http",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "local storage adapter (offline-mode) for mesh",
   "main": "./lib/index.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "yargs": "^3.6.0"
   },
   "dependencies": {
-    "obj-stream": "0.0.12",
+    "obj-stream": "0.0.x",
     "superagent": "^1.2.0",
     "xtend": "^4.0.0"
   }
