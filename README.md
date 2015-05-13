@@ -50,7 +50,7 @@ var db = http({
     }
 
     cpath = path + "/" + operation.collection;
-    mpath = cpath + "/" + operation.data ? operation.data.uid : void 0;
+    mpath = cpath + "/" + (operation.data ? operation.data.uid : void 0);
 
     return {
       "insert" : cpath,
