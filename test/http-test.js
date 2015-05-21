@@ -235,7 +235,7 @@ describe(__filename + "#", function() {
     db(mesh.operation("upsert", {
       collection: "people",
       data: { uid: "a" },
-      query: {},
+      query: {}
     })).on("end", function() {
       expect(requests[0].uri).to.be("/people/a");
       expect(requests[0].method).to.be("put");
@@ -251,7 +251,7 @@ describe(__filename + "#", function() {
     db(mesh.operation("upsert", {
       collection: "people",
       data: "abc",
-      query: {},
+      query: {}
     })).on("end", function() {
       expect(requests[0].uri).to.be("/people");
       expect(requests[0].data).to.be("abc");

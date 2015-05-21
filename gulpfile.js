@@ -132,7 +132,8 @@ gulp.task("jshint", function() {
     return gulp.
     src(paths.allFiles).
     pipe(jshint({
-      evil: true
+      evil: true,
+      es3: true
     })).
     pipe(jshint.reporter('default'));
 });
