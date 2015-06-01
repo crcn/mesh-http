@@ -1,11 +1,12 @@
 {
   "name": "mesh-http",
-  "version": "1.0.12",
-  "description": "local storage adapter (offline-mode) for mesh",
+  "version": "1.0.13",
+  "description": "mesh HTTP adapter",
   "main": "./lib/index.js",
   "scripts": {
     "test": "gulp lint test-coveralls"
   },
+  "keywords": ["meshjs"],
   "repository": {
     "type": "git",
     "url": "https://github.com/crcn/mesh.js.git"
