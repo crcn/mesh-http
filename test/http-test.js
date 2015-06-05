@@ -51,34 +51,8 @@ describe(__filename + "#", function() {
     }).end(mesh.operation("insert", { path: "/ab" }));
   });
 
-  it("can pass params in the path", function(next) {
-    var stream = mesh.stream(http({ request: request })).on("end", function() {
-      expect(requests[0].uri).to.be("/blarg");
-      next();
-    }).end(mesh.operation("insert", { data: { name: "blarg" }, path: "/:data.name" }));
-  });
-
-  it("can have http specific params", function(next) {
-    var stream = mesh.stream(http({ request: request })).
-    on("end", function() {
-      expect(requests[0].uri).to.be("/blarg");
-      next();
-    }).end(mesh.operation("insert", { http: { data: { name: "blarg" }, path: "/:data.name" }}));
-  });
-
-  it("path can be a function", function(next) {
-    var stream = mesh.stream(http({ request: request })).
-    on("end", function() {
-      expect(requests[0].uri).to.be("/blarg");
-      next();
-    }).end(mesh.operation("insert", { data: { name: "blarg" }, path: function(op) {
-      expect(op.name).to.be("insert");
-      return "/:data.name";
-    }}));
-  });
-
   it("method can be function", function(next) {
-    var stream = mesh.stream(http({ request: request }));
+    var stream = mesh.open(http({ request: request }));
     stream.on("end", function() {
       expect(requests[0].method).to.be("patch");
       next();
@@ -90,7 +64,7 @@ describe(__filename + "#", function() {
   });
 
   it("can use a transform function for the response", function(next) {
-    var stream = mesh.stream(http({ request: request }));
+    var stream = mesh.open(http({ request: request }));
     stream.on("data", function(data) {
       expect(data.data.name).to.be("blarg");
       next();
@@ -104,7 +78,7 @@ describe(__filename + "#", function() {
   });
 
   it("can provide custom http headers", function(next) {
-    var stream = mesh.stream(http({ request: request }));
+    var stream = mesh.open(http({ request: request }));
 
     stream.on("end", function() {
       expect(requests[0].headers.ua).to.be("b");
@@ -114,7 +88,7 @@ describe(__filename + "#", function() {
   });
 
   it("headers can be a function", function(next) {
-    var stream = mesh.stream(http({ request: request }));
+    var stream = mesh.open(http({ request: request }));
     stream.on("end", function() {
       expect(requests[0].headers.ua).to.be("b");
       next();
@@ -126,7 +100,7 @@ describe(__filename + "#", function() {
   });
 
   it("can add a query", function(next) {
-    var stream = mesh.stream(http({ request: request }));
+    var stream = mesh.open(http({ request: request }));
     stream.on("end", function() {
       expect(requests[0].uri).to.be("/a");
       expect(requests[0].query.ua).to.be("b");
@@ -136,7 +110,7 @@ describe(__filename + "#", function() {
   });
 
   it("query can be a function", function(next) {
-    var stream = mesh.stream(http({ request: request }));
+    var stream = mesh.open(http({ request: request }));
     stream.on("end", function() {
       expect(requests[0].query.ua).to.be("b");
       next();
@@ -149,7 +123,7 @@ describe(__filename + "#", function() {
 
   it("automatically maps the path based on the collection", function(next) {
 
-    var stream = mesh.stream(http({
+    var stream = mesh.open(http({
       request: request
     }));
 
@@ -171,11 +145,9 @@ describe(__filename + "#", function() {
 
   });
 
-  xit("can change the idProperty", function() {
-  });
 
   it("can add a prefix", function(next) {
-    var stream = mesh.stream(http({
+    var stream = mesh.open(http({
       prefix: "/api",
       request: request
     }));
@@ -187,7 +159,7 @@ describe(__filename + "#", function() {
   });
 
   it("can add a prefix in the operation", function(next) {
-    var stream = mesh.stream(http({
+    var stream = mesh.open(http({
       request: request
     }));
     stream.on("end", function() {
@@ -255,6 +227,18 @@ describe(__filename + "#", function() {
     })).on("end", function() {
       expect(requests[0].uri).to.be("/people");
       expect(requests[0].data).to.be("abc");
+      next();
+    });
+  });
+
+  it("can use fully qualified urls for the path", function(next) {
+    var db = http({
+      request: request
+    });
+
+    db({ path: "http://localhost:8080/route" }).on("end", function() {
+      expect(requests[0].uri).to.be("http://localhost:8080/route");
+      expect(requests[0].method).to.be("GET");
       next();
     });
   });

@@ -1,12 +1,14 @@
 {
   "name": "mesh-http",
-  "version": "1.0.13",
+  "version": "2.0.0",
   "description": "mesh HTTP adapter",
   "main": "./lib/index.js",
   "scripts": {
     "test": "gulp lint test-coveralls"
   },
-  "keywords": ["meshjs"],
+  "keywords": [
+    "meshjs"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/crcn/mesh.js.git"
@@ -38,7 +40,7 @@
     "yargs": "^3.6.0"
   },
   "dependencies": {
-    "obj-stream": "0.0.x",
+    "mesh": "^1.1.x",
     "superagent": "^1.2.0",
     "xtend": "^4.0.0"
   }
