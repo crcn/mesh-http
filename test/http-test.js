@@ -36,10 +36,10 @@ describe(__filename + "#", function() {
       next();
     });
 
-    stream.write(mesh.operation("insert", { path: "/ab" }));
-    stream.write(mesh.operation("update", { path: "/ab" }));
-    stream.write(mesh.operation("load", { path: "/ab" }));
-    stream.end(mesh.operation("remove", { path: "/ab" }));
+    stream.write(mesh.operation("insert", { url: "/ab" }));
+    stream.write(mesh.operation("update", { url: "/ab" }));
+    stream.write(mesh.operation("load", { url: "/ab" }));
+    stream.end(mesh.operation("remove", { url: "/ab" }));
 
   });
 
@@ -48,7 +48,7 @@ describe(__filename + "#", function() {
       expect(requests[0].method).to.be("post");
       expect(requests[0].uri).to.be("/ab");
       next();
-    }).end(mesh.operation("insert", { path: "/ab" }));
+    }).end(mesh.operation("insert", { url: "/ab" }));
   });
 
   it("method can be function", function(next) {
@@ -57,8 +57,8 @@ describe(__filename + "#", function() {
       expect(requests[0].method).to.be("patch");
       next();
     });
-    stream.end(mesh.operation("insert", { data: { name: "blarg" }, path:"/a", method: function(operation) {
-      expect(operation.path).to.be("/a");
+    stream.end(mesh.operation("insert", { data: { name: "blarg" }, url:"/a", method: function(operation) {
+      expect(operation.url).to.be("/a");
       return "patch";
     }}));
   });
@@ -70,7 +70,7 @@ describe(__filename + "#", function() {
       next();
     }).end(mesh.operation("insert", {
       data: { name: "blarg" },
-      path: "/a",
+      url: "/a",
       transform: function(data) {
         return { data: data };
       }
@@ -84,7 +84,7 @@ describe(__filename + "#", function() {
       expect(requests[0].headers.ua).to.be("b");
       next();
     });
-    stream.end(mesh.operation("insert", { data: { name: "blarg" }, path:"/a", headers: { ua: "b" } }));
+    stream.end(mesh.operation("insert", { data: { name: "blarg" }, url:"/a", headers: { ua: "b" } }));
   });
 
   it("headers can be a function", function(next) {
@@ -93,8 +93,8 @@ describe(__filename + "#", function() {
       expect(requests[0].headers.ua).to.be("b");
       next();
     });
-    stream.end(mesh.operation("insert", { data: { name: "blarg" }, path:"/a", headers: function(operation) {
-      expect(operation.path).to.be("/a");
+    stream.end(mesh.operation("insert", { data: { name: "blarg" }, url:"/a", headers: function(operation) {
+      expect(operation.url).to.be("/a");
       return { ua: "b" };
     } }));
   });
@@ -106,7 +106,7 @@ describe(__filename + "#", function() {
       expect(requests[0].query.ua).to.be("b");
       next();
     });
-    stream.end(mesh.operation("insert", { data: { name: "blarg" }, path:"/a", query: {ua:"b"}}));
+    stream.end(mesh.operation("insert", { data: { name: "blarg" }, url:"/a", query: {ua:"b"}}));
   });
 
   it("query can be a function", function(next) {
@@ -115,13 +115,13 @@ describe(__filename + "#", function() {
       expect(requests[0].query.ua).to.be("b");
       next();
     });
-    stream.end(mesh.operation("insert", { data: { name: "blarg" }, path:"/a", query: function(operation) {
-      expect(operation.path).to.be("/a");
+    stream.end(mesh.operation("insert", { data: { name: "blarg" }, url:"/a", query: function(operation) {
+      expect(operation.url).to.be("/a");
       return { ua: "b" };
     } }));
   });
 
-  it("automatically maps the path based on the collection", function(next) {
+  it("automatically maps the url based on the collection", function(next) {
 
     var stream = mesh.open(http({
       request: request
@@ -231,12 +231,12 @@ describe(__filename + "#", function() {
     });
   });
 
-  it("can use fully qualified urls for the path", function(next) {
+  it("can use fully qualified urls for the url", function(next) {
     var db = http({
       request: request
     });
 
-    db({ path: "http://localhost:8080/route" }).on("end", function() {
+    db({ url: "http://localhost:8080/route" }).on("end", function() {
       expect(requests[0].uri).to.be("http://localhost:8080/route");
       expect(requests[0].method).to.be("GET");
       next();
