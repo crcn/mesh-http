@@ -1,6 +1,6 @@
 {
   "name": "mesh-http",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "mesh HTTP adapter",
   "main": "./lib/index.js",
   "scripts": {
