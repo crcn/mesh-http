@@ -21,10 +21,10 @@ Performs a new operation on the API
 ```javascript
 var mesh = require("mesh");
 var http = require("mesh-http");
-var db = http();
+var bus  = http();
 
 // POST /people?q=search { name: "abba" }
-db({
+bus({
   url: "/people",
   method: "POST",
   data: { name: "abba" },
