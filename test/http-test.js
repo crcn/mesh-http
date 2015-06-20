@@ -142,9 +142,7 @@ describe(__filename + "#", function() {
     stream.write(mesh.operation("load", { collection: "people",  multi: true, data: { uid: "1" }}));
     stream.write(mesh.operation("remove", { collection: "people", data: { uid: "1" }}));
     stream.end();
-
   });
-
 
   it("can add a prefix", function(next) {
     var stream = mesh.open(http({
